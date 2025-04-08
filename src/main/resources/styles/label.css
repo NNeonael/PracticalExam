@@ -1,0 +1,11 @@
+
+.label {
+-fx-font-weight: 1000;
+-fx-font-size: 15px;
+}
+
+
+#ShoppingCartLabel {
+-fx-font-size: 25px;
+-fx-font-weight: 900;
+}
