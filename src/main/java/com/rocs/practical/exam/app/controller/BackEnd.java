@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -45,7 +44,7 @@ public class BackEnd  implements Initializable {
 
 
     @FXML
-    private TableColumn<Item, Integer> Item_idColumn;
+    private TableColumn<Item, Integer> ItemIDColumn;
 
     @FXML
     private TableColumn<Item, String> itemColumn;
@@ -67,7 +66,14 @@ public class BackEnd  implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-        Item_idColumn.setCellValueFactory(new PropertyValueFactory<>("ItemID"));
+
+            //Nothing works po :((
+            //having problem displaying po yung sa table sa ui
+
+            getCustomerName();
+
+
+            ItemIDColumn.setCellValueFactory(new PropertyValueFactory<>("ItemID"));
         itemColumn.setCellValueFactory(new PropertyValueFactory<>("Description"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("UnitPrice"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("Quantity"));
@@ -84,22 +90,56 @@ public class BackEnd  implements Initializable {
 
     }
 
-    public void getCustomerName(){
-     String customerID = CustomerNameTextField.getText();
 
-     if(customerID.equals("1")){
+    public void getCustomerName() {
 
-     }
+        String customerID = textfieldCustID.getText();
+
+
+        if (customerID.isEmpty()) {
+            CustomerNameTextField.setText("Please enter a Customer ID.");
+            return;
+        }
+
+        try {
+
+            int customerIdInt = Integer.parseInt(customerID);
+            try (Connection con = ConnectionHelper.getConnection()) {
+                String sql = "SELECT Name FROM Customers WHERE CustomerID = ?";
+                PreparedStatement stmt = con.prepareStatement(sql);
+                stmt.setInt(1, customerIdInt);
+
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    String customerName = rs.getString("Name");
+
+                    CustomerNameTextField.setText(customerName);
+                } else {
+
+                    CustomerNameTextField.setText("Customer not found.");
+                }
+
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+                CustomerNameTextField.setText("Error retrieving data.");
+            }
+
+        } catch (NumberFormatException e) {
+
+            CustomerNameTextField.setText("Invalid Customer ID format.");
+        }
     }
 
-    private void onAddToCart() {
+
+
+    private void AddtoCartButton() {
         try {
-            String itemID = Item_idColumn.getText();
+            String itemID = ItemIDColumn.getText();
             String description = descriptionTextField.getText();
             int quantity = Integer.parseInt(ItemIDTextField.getText());
-             double price = 50.0;
-
-             cartItems.add ( new Item (itemID,description,quantity,price));
+            int price = getPrice(ItemIDColumn);
 
 
 
@@ -109,10 +149,30 @@ public class BackEnd  implements Initializable {
         }
     }
 
+    public static int getPrice(TableColumn<Item, Integer> item)  {
+        try(Connection con = ConnectionHelper.getConnection()){
+            String sql = "SELECT UnitPrice\n" +
+                    "FROM Items\n" +
+                    "WHERE ItemID = : ?;\n";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1,item.getId());
 
 
 
-    public ObservableList <Item> testDb() throws SQLException {
+
+
+
+        } catch (RuntimeException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+
+
+
+    public ObservableList <Item> displayOnCart() throws SQLException {
 
     ObservableList<Item> retrieve = FXCollections.observableArrayList();
 
@@ -151,7 +211,7 @@ public class BackEnd  implements Initializable {
 
 
     public void showTableOnUi() throws SQLException {
-        ObservableList<Item> storeListTable = testDb();
+        ObservableList<Item> storeListTable = displayOnCart();
         ShoppingCart.setItems(storeListTable);
     }
 
@@ -165,3 +225,4 @@ public class BackEnd  implements Initializable {
 
 
 }
+

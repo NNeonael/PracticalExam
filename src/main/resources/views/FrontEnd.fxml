@@ -11,7 +11,7 @@
    <children>
       <TableView fx:id="ShoppingCart" layoutX="391.0" layoutY="68.0" prefHeight="517.0" prefWidth="506.0" stylesheets="@../styles/table.css">
         <columns>
-          <TableColumn fx:id="Item_idColumn" prefWidth="104.7999267578125" text="ITEM ID" />
+          <TableColumn fx:id="ItemIDColumn" prefWidth="104.7999267578125" text="ITEM ID" />
           <TableColumn fx:id="itemColumn" prefWidth="108.00006103515625" text="ITEM" />
             <TableColumn fx:id="priceColumn" prefWidth="136.0" text="PRICE" />
             <TableColumn fx:id="quantityColumn" prefWidth="148.0" text="QUANTITY" />
@@ -30,7 +30,7 @@
             <Label layoutX="69.0" layoutY="306.0" stylesheets="@../styles/label.css" text="Description" />
             <TextField fx:id="descriptionTextField" layoutX="69.0" layoutY="330.0" stylesheets="@../styles/textfield.css" />
             <Label layoutX="69.0" layoutY="392.0" stylesheets="@../styles/label.css" text="Quantity" />
-            <TextField fx:id="QuantityTextField" layoutX="70.0" layoutY="419.0" prefHeight="32.0" prefWidth="49.0" stylesheets="@../styles/textfield.css" />
+            <TextField fx:id="QuantityTextField" layoutX="69.0" layoutY="425.0" prefHeight="32.0" prefWidth="49.0" stylesheets="@../styles/textfield.css" />
             <Button fx:id="AddtoCartButton" layoutX="69.0" layoutY="505.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="158.0" stylesheets="@../styles/button.css" text="ADD TO CART" />
          </children>
       </AnchorPane>
